@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top-Fame | 🔥الشهرة</title>
+    <!-- Tailwind CSS للواجهات الاحترافية -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome للأيقونات الرسمية المتناسقة -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0b0f19; color: #f0f6fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .bg-card { background-color: #121824; border: 1px solid #1f2a3f; }
+        .btn-grad { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); }
+        .nav-active { color: #3b82f6; font-weight: bold; }
+        /* إخفاء شريط التمرير الافتراضي */
+        ::-webkit-scrollbar { display: none; }
+        
+        .verified-badge-svg {
+            width: 18px;
+            height: 18px;
+            fill: #1d9bf0;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        .verified-badge-inline {
+            width: 14px;
+            height: 14px;
+            fill: #1d9bf0;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body class="pb-24 select-none relative min-h-screen">
+
+    <!-- نظام التنبيهات الداخلي الفخم -->
+    <div id="custom-toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-11/12 max-w-sm p-4 rounded-xl shadow-2xl text-center text-xs font-bold transition-all duration-300 transform scale-0 opacity-0"></div>
+
+    <!-- شاشة التحقق الفخمة عند الدخول للمتجر للمسجلين مسبقاً -->
+    <div id="splash-checking" class="fixed inset-0 bg-[#0b0f19]/95 backdrop-blur-md z-[200] flex flex-col items-center justify-center p-4 hidden">
+        <div class="bg-card p-6 rounded-2xl border border-blue-500/30 text-center max-w-xs w-full shadow-2xl animate-pulse">
+            <i class="fas fa-shield-halved text-blue-500 text-4xl mb-3 animate-spin"></i>
+            <h3 class="text-sm font-bold text-white tracking-wide">جاري التحقق من بيانات الحساب...</h3>
+            <p class="text-[11px] text-gray-500 mt-1">يرجى الانتظار لحماية جلستك الآمنة</p>
+        </div>
+    </div>
+
+    <!-- الـ Header العلوي الثابت والمطور -->
+    <header class="p-4 flex justify-between items-center border-b border-[#1f2a3f] bg-[#0b0f19] sticky top-0 z-50 max-w-md mx-auto">
+        <div class="flex items-center gap-3">
+            <div onclick="switchTab('account')" class="w-10 h-10 rounded-full border border-gray-700 overflow-hidden cursor-pointer bg-slate-800 flex items-center justify-center text-white font-bold relative shrink-0" id="header-avatar-container">
+                <img id="header-avatar" src="" class="w-full h-full object-cover hidden">
+                <i id="header-avatar-icon" class="fas fa-user text-sm"></i>
+            </div>
+            <div class="flex items-center gap-1">
+                <h1 class="text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 cursor-pointer" onclick="openAdminAuthModal()">Top-Fame</h1>
+                <span id="header-verified-badge" class="hidden">
+                    <svg class="verified-badge-svg" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.99-3.818-3.99-.48 0-.94.1-1.348.27C14.825 2.515 13.512 1.5 12 1.5s-2.825 1.015-3.422 2.28c-.407-.17-.867-.27-1.348-.27-2.108 0-3.818 1.78-3.818 3.99 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.71 3.99 3.818 3.99.48 0 .94-.1 1.348-.27.597 1.265 1.91 2.28 3.422 2.28s2.825-1.015 3.422-2.28c.407.17.867.27 1.348.27 2.108 0 3.818-1.78 3.818-3.99 0-.495-.084-.965-.238-1.4 1.273-.65 2.148-2.02 2.148-3.6zm-12.72 4.23l-3.32-3.32 1.42-1.42 1.9 1.9 4.83-4.83 1.42 1.42-6.25 6.25z"/></svg>
+                </span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <button onclick="toggleNotifications()" class="relative p-2 text-gray-400 hover:text-white transition-colors">
+                <i class="fas fa-bell text-lg"></i>
+                <span id="noti-badge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#0b0f19] hidden"></span>
+            </button>
+            <div class="text-green-400 font-bold text-sm bg-[#121824] px-3 py-1 rounded-full border border-green-950/50">₪ <span id="global-balance">0.00</span></div>
+        </div>
+    </header>
+
+    <!-- تفعيل النوافذ البديلة لـ العبور للوحة الأدمن -->
+    <div id="admin-auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[150] flex items-center justify-center p-4 hidden">
+        <div class="bg-card w-full max-w-xs rounded-2xl p-5 border border-red-500/30 shadow-2xl relative space-y-4">
+            <button onclick="closeAdminAuthModal()" class="absolute top-3 left-3 text-gray-500 hover:text-white text-lg">&times;</button>
+            <div class="text-center">
+                <i class="fas fa-lock-keyhole text-red-500 text-2xl mb-1"></i>
+                <h3 class="text-sm font-bold text-white">لوحة التحكم خاصة للمطور⚙️</h3>
+            </div>
+            <input type="password" id="admin-pass-input" placeholder="أدخل كلمة سر الإدارة" class="w-full p-2.5 rounded-xl bg-[#0b0f19] border border-gray-800 text-xs text-center text-white focus:outline-none">
+            <button onclick="verifyAdminPassword()" class="w-full p-2.5 btn-grad rounded-xl text-xs font-bold text-white">دخول النظام</button>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل المحفظة الرقمية -->
+    <div id="admin-money-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[150] flex items-center justify-center p-4 hidden">
+        <div class="bg-card w-full max-w-xs rounded-2xl p-5 border border-blue-500/30 shadow-2xl relative space-y-4">
+            <button onclick="closeAdminMoneyModal()" class="absolute top-3 left-3 text-gray-500 hover:text-white text-lg">&times;</button>
+            <h3 id="money-modal-title" class="text-xs font-bold text-gray-300 text-center">تعديل المحفظة الرقمية</h3>
+            <input type="number" id="money-modal-amount" placeholder="أدخل القيمة المالية بالأرقام (₪)" class="w-full p-2.5 rounded-xl bg-[#0b0f19] border border-gray-800 text-xs text-center text-white focus:outline-none">
+            <input type="hidden" id="money-modal-phone">
+            <input type="hidden" id="money-modal-action">
+            <button onclick="submitUserBalanceModification()" class="w-full p-2.5 btn-grad rounded-xl text-xs font-bold text-white">تأكيد العملية الحية</button>
+        </div>
+    </div>
+
+    <!-- نافذة مركز الإشعارات -->
+    <div id="noti-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-card w-full max-w-sm rounded-2xl p-5 border border-gray-800 relative">
+            <button onclick="toggleNotifications()" class="absolute top-4 left-4 text-gray-500 hover:text-white text-xl">&times;</button>
+            <h3 class="text-sm font-bold text-gray-300 mb-4 flex items-center gap-2"><i class="fas fa-bell text-yellow-500"></i> مركز الإشعارات الحية</h3>
+            <div class="space-y-3 max-h-60 overflow-y-auto text-xs" id="noti-list">
+                <p class="text-gray-500 text-center italic py-4">لا توجد إشعارات حالياً.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- محتوى الصفحات الديناميكي الرئيسي -->
+    <main class="p-4 max-w-md mx-auto min-h-screen">
+        
+        <!-- 1. صفحة الرئيسية -->
+        <div id="page-home" class="page-content">
+            <div class="btn-grad p-6 rounded-3xl mb-6 text-center relative overflow-hidden shadow-lg">
+                <h2 class="text-xl font-extrabold text-white">أهلاً بك في متجر الشهرة 🔥</h2>
+                <p class="text-white/80 mt-2 text-xs leading-relaxed">🌎موقع خدمات زيادة التفاعل لجميع تطبيقات التواصل الاجتماعي ✨</p>
+            </div>
+
+            <h2 class="font-bold mb-4 text-sm flex items-center gap-1 text-yellow-500"><i class="fas fa-bolt"></i> تصفح الخدمات الحية:</h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div onclick="switchTabWithPlatform('store', 'instagram')" class="bg-card p-3 rounded-2xl text-center cursor-pointer hover:scale-[1.02] transition-transform flex flex-col items-center justify-center">
+                    <div class="flex items-center justify-center gap-0.5 mb-1">
+                        <i class="fab fa-instagram text-pink-500 text-2xl"></i>
+                    </div>
+                    <p class="text-[10px] font-bold text-gray-300">إنستغرام</p>
+                </div>
+                <div onclick="switchTabWithPlatform('store', 'facebook')" class="bg-card p-3 rounded-2xl text-center cursor-pointer hover:scale-[1.02] transition-transform flex flex-col items-center justify-center">
+                    <i class="fab fa-facebook text-blue-500 text-2xl mb-1"></i>
+                    <p class="text-[10px] font-bold text-gray-300">فيسبوك</p>
+                </div>
+                <div onclick="switchTabWithPlatform('store', 'tiktok')" class="bg-card p-3 rounded-2xl text-center cursor-pointer hover:scale-[1.02] transition-transform flex flex-col items-center justify-center">
+                    <i class="fab fa-tiktok text-white text-2xl mb-1"></i>
+                    <p class="text-[10px] font-bold text-gray-300">تيك توك</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. صفحة المتجر والشراء المطور الديناميكي بالكامل -->
+        <div id="page-store" class="page-content hidden">
+            <h2 class="font-bold mb-4 text-sm text-gray-300 flex items-center gap-1"><i class="fas fa-fire text-red-500"></i> فلترة الخدمات حسب المنصة:</h2>
+            
+            <!-- أيقونات الفلترة الفخمة المتناسقة مع هويتك البصرية والجديدة -->
+            <div class="grid grid-cols-3 gap-2 mb-6">
+                <button id="filter-btn-instagram" onclick="filterServicesLiveByPlatform('instagram')" class="flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-pink-500/30 text-[11px] font-bold transition-all">
+                    <i class="fab fa-instagram text-pink-500 text-sm"></i> إنستا <svg class="verified-badge-inline" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.99-3.818-3.99-.48 0-.94.1-1.348.27C14.825 2.515 13.512 1.5 12 1.5s-2.825 1.015-3.422 2.28c-.407-.17-.867-.27-1.348-.27-2.108 0-3.818 1.78-3.818 3.99 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.71 3.99 3.818 3.99.48 0 .94-.1 1.348-.27.597 1.265 1.91 2.28 3.422 2.28s2.825-1.015 3.422-2.28c.407.17.867.27 1.348.27 2.108 0 3.818-1.78 3.818-3.99 0-.495-.084-.965-.238-1.4 1.273-.65 2.148-2.02 2.148-3.6zm-12.72 4.23l-3.32-3.32 1.42-1.42 1.9 1.9 4.83-4.83 1.42 1.42-6.25 6.25z"/></svg>
+                </button>
+                <button id="filter-btn-facebook" onclick="filterServicesLiveByPlatform('facebook')" class="flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-gray-800 text-[11px] font-bold transition-all">
+                    <i class="fab fa-facebook text-blue-500 text-sm"></i> فيسبوك
+                </button>
+                <button id="filter-btn-tiktok" onclick="filterServicesLiveByPlatform('tiktok')" class="flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-gray-800 text-[11px] font-bold transition-all">
+                    <i class="fab fa-tiktok text-white text-sm"></i> تيك توك
+                </button>
+            </div>
+
+            <div class="bg-card p-5 rounded-2xl mb-4 relative shadow-md border border-blue-500/20">
+                <h3 class="font-bold text-sm text-white mb-3">اختر الخدمة المطلوبة:</h3>
+                <div class="form-group mb-4">
+                    <select id="service-select" onchange="calculateLiveTotal()" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none"></select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="block text-[11px] text-gray-400 mb-1.5">الكمية المطلوبة:</label>
+                    <input type="number" id="quantity-input" value="1000" min="1" oninput="calculateLiveTotal()" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="block text-[11px] text-gray-400 mb-1.5">الرابط المستهدف / اسم المستخدم:</label>
+                    <input type="text" id="target-link-input" placeholder="ضع الرابط أو يوزر الحساب هنا" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                </div>
+
+                <!-- صندوق حساب السعر والخصومات التلقائي الفوري للحسابات الموثقة فقط -->
+                <div class="p-4 bg-slate-950/50 border border-dashed border-blue-500/30 rounded-xl text-center mb-4">
+                    <p class="text-[11px] text-gray-400">التكلفة الإجمالية الحية</p>
+                    <p class="text-xl font-black text-green-400 mt-1">₪ <span id="total-calculated-cost">0.00</span></p>
+                    <p id="store-discount-msg" class="text-[10px] text-pink-500 font-bold mt-1 hidden"></p>
+                </div>
+
+                <button onclick="submitPurchaseOrder()" class="btn-grad w-full p-3.5 rounded-xl text-xs font-bold text-white shadow-lg">تأكيد وشراء الخدمة الآن ⚡</button>
+            </div>
+        </div>
+
+        <!-- 3. صفحة المحفظة + سجل الطلبات الحديث -->
+        <div id="page-wallet" class="page-content hidden space-y-5">
+            <h2 class="font-bold text-sm text-gray-300">💼 محفظتك الرقمية:</h2>
+            <div class="bg-card p-6 rounded-2xl text-center shadow-md border-l-4 border-green-500">
+                <p class="text-xs text-gray-400">الرصيد المتوفر حالياً</p>
+                <p class="text-2xl font-black text-green-400 mt-2">₪ <span id="wallet-balance-huge">0.00</span></p>
+            </div>
+
+            <div class="bg-card p-4 rounded-2xl space-y-3">
+                <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1"><i class="fas fa-clock-rotate-left text-blue-400"></i> سجل طلباتي وخدماتي الحية</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-[11px]">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-500">
+                                <th class="pb-2 font-bold">رقم الطلب</th>
+                                <th class="pb-2 font-bold">الخدمة</th>
+                                <th class="pb-2 font-bold text-center">الكمية</th>
+                                <th class="pb-2 font-bold text-center">الوقت</th>
+                                <th class="pb-2 font-bold text-left">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-orders-tbody" class="divide-y divide-gray-900 text-gray-300">
+                            <tr><td colspan="5" class="text-center text-gray-500 py-4 italic">سجل دخولك لرؤية الطلبات الحية.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- قسم طرق الدفع المطور -->
+<div class="bg-card p-5 rounded-2xl border border-blue-500/20 mt-4 space-y-4">
+    <h3 class="text-sm font-bold text-gray-300 flex items-center gap-2 mb-4">
+        <i class="fas fa-wallet text-blue-400"></i> طرق شحن المحفظة
+    </h3>
+    
+    <div class="grid grid-cols-3 gap-2">
+        <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 text-center flex flex-col items-center">
+            <i class="fas fa-mobile-alt text-xl text-green-400 mb-2"></i>
+            <span class="text-[10px] text-gray-300">جوال باي</span>
+        </div>
+        <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 text-center flex flex-col items-center">
+            <i class="fas fa-exchange-alt text-xl text-yellow-400 mb-2"></i>
+            <span class="text-[10px] text-gray-300">بال باي</span>
+        </div>
+        <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 text-center flex flex-col items-center">
+            <i class="fas fa-university text-xl text-blue-400 mb-2"></i>
+            <span class="text-[10px] text-gray-300">بنك فلسطين</span>
+        </div>
+    </div>
+
+    <div class="bg-[#0b0f19] p-4 rounded-xl border border-dashed border-gray-700 text-center relative overflow-hidden">
+        <p class="text-[11px] text-gray-400 mb-2">الرقم المعتمد للتحويل:</p>
+        
+        <!-- جعلنا الزر يغطي مساحة أكبر ليسهل الضغط عليه -->
+        <button onclick="copyNumber()" class="flex justify-center items-center gap-3 w-full group">
+            <span id="transferNum" class="text-xl font-black text-white tracking-widest">0599074653</span>
+            <div class="bg-blue-600/20 p-2 rounded-lg text-blue-400 group-hover:bg-blue-600/40 transition-all">
+                <i class="fas fa-copy"></i>
+            </div>
+        </button>
+
+        <p class="text-[11px] text-blue-400 font-bold mt-2">باسم: معتز الغوراني</p>
+        
+        <!-- الرسالة الخضراء تظهر فوق كل شيء -->
+        <div id="copySuccess" class="hidden absolute inset-0 bg-[#0b0f19] flex items-center justify-center rounded-xl z-50">
+            <span class="text-green-500 font-bold text-sm flex items-center gap-2">
+                <i class="fas fa-check-circle"></i> تم نسخ الرقم
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyNumber() {
+    const text = "0599074653"; // الرقم مباشرة هنا
+    const msg = document.getElementById("copySuccess");
+    
+    // إنشاء عنصر نص مخفي لنسخه (أضمن طريقة)
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        // إظهار الرسالة
+        msg.classList.remove("hidden");
+        setTimeout(() => {
+            msg.classList.add("hidden");
+        }, 1500);
+    } catch (err) {
+        alert("تعذر النسخ تلقائياً");
+    }
+    
+    document.body.removeChild(textArea);
+}
+</script>
+
+        </div>
+
+        <!-- 4. صفحة حسابي الشخصي -->
+        <div id="page-account" class="page-content hidden">
+            <h2 class="font-bold mb-4 text-sm text-gray-300">👤 حسابي الشخصي:</h2>
+            
+            <div id="account-visitor" class="bg-card p-6 rounded-2xl text-center shadow-lg">
+                <p class="text-sm font-bold text-white">أنت تتصفح كزائر حالياً</p>
+                <button onclick="openAuthModal()" class="btn-grad w-full p-3 rounded-xl text-xs font-bold text-white mt-4">تسجيل الدخول / إنشاء حساب</button>
+            </div>
+
+            <div id="account-user" class="bg-card p-5 rounded-2xl shadow-lg hidden space-y-4">
+                <div class="flex items-center gap-4 border-b border-gray-800 pb-4 relative">
+                    <div class="relative w-16 h-16 rounded-full border-2 border-blue-500 bg-slate-800 flex items-center justify-center overflow-hidden text-white font-bold text-xl group shrink-0">
+                        <img id="profile-avatar-img" src="" class="w-full h-full object-cover hidden">
+                        <span id="profile-avatar-letter">🏆</span>
+                        <label class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs cursor-pointer transition-opacity">
+                            <i class="fas fa-camera text-white"></i>
+                            <input type="file" id="avatar-input" accept="image/*" class="hidden" onchange="uploadAvatarImage(this)">
+                        </label>
+                    </div>
+                    <div class="flex flex-col justify-center text-xs space-y-1">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-gray-400 font-medium">اسم المستخدم:</span> 
+                            <span class="text-white font-bold text-sm" id="info-username-display">...</span>
+                            <span id="account-verified-badge" class="hidden">
+                                <svg class="verified-badge-svg" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.99-3.818-3.99-.48 0-.94.1-1.348.27C14.825 2.515 13.512 1.5 12 1.5s-2.825 1.015-3.422 2.28c-.407-.17-.867-.27-1.348-.27-2.108 0-3.818 1.78-3.818 3.99 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.71 3.99 3.818 3.99.48 0 .94-.1 1.348-.27.597 1.265 1.91 2.28 3.422 2.28s2.825-1.015 3.422-2.28c.407.17.867.27 1.348.27 2.108 0 3.818-1.78 3.818-3.99 0-.495-.084-.965-.238-1.4 1.273-.65 2.148-2.02 2.148-3.6zm-12.72 4.23l-3.32-3.32 1.42-1.42 1.9 1.9 4.83-4.83 1.42 1.42-6.25 6.25z"/></svg>
+                            </span>
+                        </div>
+                        <div><span class="text-gray-400 font-medium">رقم المستخدم (الهاتف):</span> <span class="text-blue-400 font-mono font-bold" id="info-phone-display">...</span></div>
+                    </div>
+                </div>
+                
+                <div class="space-y-2.5 text-xs">
+                    <div class="flex justify-between p-3 bg-[#0b0f19] rounded-xl cursor-pointer border border-gray-800/50" onclick="copyUserID()">
+                        <span class="text-gray-400"><i class="fas fa-fingerprint text-blue-400 mr-1"></i> رقم المعرف الشخصي (ID):</span>
+                        <span class="text-blue-400 font-mono font-bold flex items-center gap-1.5"><span id="info-id">00000000</span> <i class="far fa-copy text-[11px]"></i></span>
+                    </div>
+                    <div class="flex justify-between p-3 bg-[#0b0f19] rounded-xl border border-gray-800/50">
+                        <span class="text-gray-400"><i class="fas fa-map-marker-alt text-red-400 mr-1"></i> مكان الإقامة:</span>
+                        <span class="text-white font-medium" id="info-address">...</span>
+                    </div>
+                    <div class="flex justify-between p-3 bg-[#0b0f19] rounded-xl border border-gray-800/50">
+                        <span class="text-gray-400"><i class="fas fa-calendar-alt text-purple-400 mr-1"></i> تاريخ الإنشاء:</span>
+                        <span class="text-gray-400" id="info-date">...</span>
+                    </div>
+                </div>
+
+                <button onclick="openSecurityModal()" class="w-full p-3 bg-blue-950/30 text-blue-400 border border-blue-900/40 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all hover:bg-blue-950/50">
+                    <i class="fas fa-shield-alt"></i> إعدادات أمان الحساب
+                </button>
+
+                <button onclick="handleLogout()" class="w-full p-3 bg-red-900/10 text-red-400 border border-red-900/30 rounded-xl text-xs font-bold hover:bg-red-900/20 transition-all">تسجيل الخروج</button>
+            </div>
+        </div>
+
+        <!-- 5. لوحة تحكم الإدارة الكاملة المحدثة للخدمات الحية والعروض والأسعار -->
+        <div id="page-admin" class="page-content hidden space-y-6">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h2 class="font-black text-base text-red-400 flex items-center gap-1.5"><i class="fas fa-user-gear animate-pulse"></i> لوحة التحكم والتحكم الفائق</h2>
+                <button onclick="switchTab('home')" class="bg-slate-800 text-gray-400 px-3 py-1 rounded-lg text-xs hover:text-white">خروج</button>
+            </div>
+
+            <!-- إحصائيات حية -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-card p-4 rounded-xl border border-blue-900/40 text-center">
+                    <p class="text-[11px] text-gray-400">إجمالي المستخدمين</p>
+                    <p id="admin-stat-users" class="text-lg font-black text-blue-400 mt-1">0</p>
+                </div>
+                <div class="bg-card p-4 rounded-xl border border-green-900/40 text-center">
+                    <p class="text-[11px] text-gray-400">إجمالي الأموال بالمنصة</p>
+                    <p id="admin-stat-money" class="text-lg font-black text-green-400 mt-1">₪ 0.00</p>
+                </div>
+            </div>
+
+            <!-- إضافة وتحرير الأسعار والخدمات والعروض تلقائياً -->
+            <div class="bg-card p-4 rounded-xl space-y-3 border border-purple-500/20">
+                <h3 class="text-xs font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 flex items-center gap-1"><i class="fas fa-plus-circle"></i> إضافة / تعديل أسعار الخدمات والعروض</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="adm-srv-id" placeholder="رقم الخدمة (مثال: 1024)" class="p-2 bg-[#0b0f19] border border-gray-800 text-xs rounded-lg text-white outline-none">
+                    <select id="adm-srv-platform" class="p-2 bg-[#0b0f19] border border-gray-800 text-xs rounded-lg text-white outline-none">
+                        <option value="instagram">إنستغرام</option>
+                        <option value="facebook">فيسبوك</option>
+                        <option value="tiktok">تيك توك</option>
+                    </select>
+                </div>
+                <input type="text" id="adm-srv-name" placeholder="اسم الخدمة بالكامل (مثال: زيادة متابعين جودة عالية)" class="w-full p-2.5 bg-[#0b0f19] border border-gray-800 text-xs rounded-lg text-white outline-none">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" id="adm-srv-price" step="0.01" placeholder="السعر لكل 1000 (₪)" class="p-2 bg-[#0b0f19] border border-gray-800 text-xs rounded-lg text-white outline-none">
+                    <input type="number" id="adm-srv-discount" placeholder="نسبة الخصم للموثقين %" value="0" class="p-2 bg-[#0b0f19] border border-gray-800 text-xs rounded-lg text-white outline-none">
+                </div>
+                <button onclick="saveServiceLiveFromAdmin()" class="w-full p-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-xs transition-all shadow-md">حفظ ونشر الخدمة بالمتجر فوراً 🚀</button>
+                
+                <!-- قائمة مراجعة وحذف الخدمات الحية بالسيرفر -->
+                <div class="pt-2">
+                    <p class="text-[11px] text-gray-400 font-bold mb-1.5">الخدمات النشطة حالياً بالمتجر:</p>
+                    <div id="adm-services-list-container" class="space-y-1.5 max-h-36 overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <div class="bg-card p-4 rounded-xl space-y-3">
+                <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1"><i class="fas fa-bullhorn text-yellow-500"></i> بث إشعار عام لجميع الحسابات</h3>
+                <input type="text" id="adm-noti-title" placeholder="عنوان الإشعار العام" class="w-full p-2.5 rounded-lg bg-[#0b0f19] border border-gray-800 text-xs text-white focus:outline-none">
+                <textarea id="adm-noti-text" rows="2" placeholder="تفاصيل نص الإشعار العام..." class="w-full p-2.5 rounded-lg bg-[#0b0f19] border border-gray-800 text-xs text-white focus:outline-none"></textarea>
+                <button onclick="createNewNotification()" class="w-full p-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-lg text-xs transition-all shadow-md">بث وإرسال الإشعار اللحظي ⚡</button>
+                <hr class="border-gray-800 my-2">
+                <div id="adm-noti-list-manage" class="space-y-2 max-h-32 overflow-y-auto pt-1"></div>
+            </div>
+
+            <div class="bg-card p-4 rounded-xl space-y-3">
+                <h3 class="text-xs font-bold text-purple-400 flex items-center gap-1"><i class="fas fa-list-check"></i> إدارة طلبات العملاء وتعديل الحالات</h3>
+                <div id="admin-orders-manage-list" class="space-y-2 max-h-60 overflow-y-auto">
+                    <p class="text-[11px] text-gray-500 text-center italic py-2">لا توجد طلبات بالسيرفر حالياً.</p>
+                </div>
+            </div>
+
+            <div class="bg-card p-4 rounded-xl space-y-3">
+                <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1"><i class="fas fa-search text-blue-400"></i> محرك البحث والتحكم في التوثيق والإشعارات الخاصة</h3>
+                <div class="relative">
+                    <i class="fas fa-search absolute right-3 top-3 text-gray-500 text-xs"></i>
+                    <input type="text" id="adm-search-input" oninput="filterUsersLive()" placeholder="ابحث باسم المستخدم أو رقم الهاتف..." class="w-full p-2.5 pr-8 rounded-lg bg-[#0b0f19] border border-gray-800 text-xs text-white focus:outline-none">
+                </div>
+                <div id="adm-search-results" class="space-y-3 max-h-96 overflow-y-auto pt-2">
+                    <p class="text-[11px] text-gray-500 text-center italic py-4">اكتب حرفاً أو رقماً لبدء الفلترة الفورية...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- نافذة أمان الحساب -->
+    <div id="security-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-card w-full max-w-sm rounded-2xl p-5 border border-gray-800 relative space-y-4">
+            <button onclick="closeSecurityModal()" class="absolute top-4 left-4 text-gray-500 hover:text-white text-xl">&times;</button>
+            <h3 class="text-sm font-bold text-gray-300 flex items-center gap-1.5 border-b border-gray-800 pb-2"><i class="fas fa-lock text-blue-400"></i> إعدادات أمان الحساب</h3>
+            <div class="space-y-2">
+                <label class="text-[11px] text-gray-400">تعديل اسم المستخدم:</label>
+                <div class="flex gap-2">
+                    <input type="text" id="sec-new-name" placeholder="الاسم الجديد" class="w-full p-2 rounded-lg bg-[#0b0f19] border border-gray-800 text-xs text-white focus:outline-none">
+                    <button onclick="updateDisplayNameOnly()" class="bg-blue-600 hover:bg-blue-700 px-3 rounded-lg text-xs font-bold text-white shrink-0">تحديث</button>
+                </div>
+            </div>
+            <hr class="border-gray-800">
+            <div class="space-y-2">
+                <label class="text-[11px] text-gray-400">تغيير كلمة المرور:</label>
+                <input type="password" id="sec-old-pass" placeholder="كلمة المرور الحالية" class="w-full p-2.5 rounded-lg bg-[#0b0f19] border border-gray-800 text-xs text-white focus:outline-none">
+                <input type="password" id="sec-new-pass" placeholder="كلمة المرور الجديدة" class="w-full p-2.5 rounded-lg bg-[#0b0f19] border border-gray-800 text-xs text-white focus:outline-none">
+                <button onclick="updatePasswordOnly()" class="w-full p-2.5 btn-grad rounded-lg text-xs font-bold text-white shadow-md">حفظ كلمة المرور الجديدة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدخول وإنشاء الحساب -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-card w-full max-w-sm rounded-2xl p-5 border border-gray-800 relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 left-4 text-gray-500 hover:text-white text-xl">&times;</button>
+            <div class="flex justify-center border-b border-gray-800 pb-3 mb-4 gap-4 text-sm">
+                <button id="tab-login-btn" onclick="toggleAuthType('login')" class="text-blue-500 font-bold border-b-2 border-blue-500 pb-1">تسجيل الدخول</button>
+                <button id="tab-register-btn" onclick="toggleAuthType('register')" class="text-gray-400 pb-1">إنشاء حساب جديد</button>
+            </div>
+
+            <div id="form-login" class="space-y-3">
+                <input type="text" id="login-phone" placeholder="رقم الهاتف" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <input type="password" id="login-pass" placeholder="كلمة المرور" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <button onclick="processLogin()" class="btn-grad w-full p-3 rounded-xl text-xs font-bold text-white mt-2">دخول للمتجر</button>
+            </div>
+
+            <div id="form-register" class="space-y-3 hidden">
+                <input type="text" id="reg-name" placeholder="اسم المستخدم المعروض في حسابك" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <input type="text" id="reg-phone" placeholder="رقم المستخدم (الهاتف)" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <input type="text" id="reg-address" placeholder="العنوان أو مكان الإقامة" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <input type="password" id="reg-pass" placeholder="كلمة المرور الفريدة" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <input type="password" id="reg-pass-confirm" placeholder="إعادة كتابة كلمة المرور لتأكيدها" class="w-full p-3 rounded-xl bg-[#0b0f19] border border-[#1f2a3f] text-xs text-white focus:outline-none">
+                <button onclick="processRegister()" class="btn-grad w-full p-3 rounded-xl text-xs font-bold text-white mt-2">تأكيد وإنشاء الحساب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي الثابت -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#121824] border-t border-[#1f2a3f] p-3 flex justify-around items-center z-50 max-w-md mx-auto">
+        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-gray-400 text-[11px] nav-active"><i class="fas fa-home text-base"></i><span>الرئيسية</span></button>
+        <button onclick="switchTab('store')" id="nav-store" class="flex flex-col items-center gap-1 text-gray-400 text-[11px]"><i class="fas fa-shopping-bag text-base"></i><span>المتجر</span></button>
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 text-gray-400 text-[11px]"><i class="fas fa-wallet text-base"></i><span>المحفظة</span></button>
+        <button onclick="switchTab('account')" id="nav-account" class="flex flex-col items-center gap-1 text-gray-400 text-[11px]"><i class="fas fa-user text-base"></i><span>حسابي</span></button>
+    </nav>
+
+    <!-- ربط الأنظمة الحية لـ Firebase والمعالجة الذكية والمُحسّنة للبيانات -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCC5ko65-2mIap0jDF1lVEGd-sO77kqUio",
+            authDomain: "top-fame-1d1b1.firebaseapp.com",
+            databaseURL: "https://top-fame-1d1b1-default-rtdb.firebaseio.com",
+            projectId: "top-fame-1d1b1",
+            storageBucket: "top-fame-1d1b1.firebasestorage.app",
+            messagingSenderId: "382079682024",
+            appId: "1:382079682024:web:3b9168ee7b7133baa8105d",
+            measurementId: "G-E41B74MZX5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        let activeUserSession = null;
+        let localGlobalUsersList = [];
+        let allStoreOrders = [];
+        let allDynamicServices = []; 
+        let activeFilterPlatform = 'instagram'; 
+        let unsubscribeAdminUsers = null;
+        let unsubscribeAdminOrders = null;
+        let unsubscribeUserOrders = null;
+
+        enableIndexedDbPersistence(db).catch((err) => {
+            console.warn("تنبيه الكاش مفعّل محلياً.");
+        });
+
+        function generateUniqueId() { return Math.floor(10000000 + Math.random() * 90000000).toString(); }
+
+        function timeAgo(timestamp) {
+            if (!timestamp) return "غير محدد";
+            const diff = Date.now() - timestamp;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (seconds < 60) return "منذ ثوانٍ";
+            if (minutes < 60) return `منذ ${minutes} د`;
+            if (hours < 24) return `منذ ${hours} س`;
+            return `منذ ${days} ي`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSession = localStorage.getItem('top_fame_user');
+            if (savedSession) {
+                const splash = document.getElementById("splash-checking");
+                splash.classList.remove("hidden");
+                const parsed = JSON.parse(savedSession);
+                
+                onSnapshot(doc(db, "store_users", parsed.phone), (docSnap) => {
+                    splash.classList.add("hidden");
+                    if (docSnap.exists()) {
+                        renderUserAccount(docSnap.data());
+                    }
+                }, (error) => { splash.classList.add("hidden"); });
+            }
+
+            // الاستماع الحي للخدمات الديناميكية وتحديث القوائم تلقائياً للزبون والأدمن
+            onSnapshot(collection(db, "dynamic_services"), (snapshot) => {
+                allDynamicServices = [];
+                snapshot.forEach(doc => {
+                    allDynamicServices.push({ srvDocId: doc.id, ...doc.data() });
+                });
+                renderServicesInStoreSelect();
+                renderServicesInAdminList();
+            });
+
+            // استماع مستهدف ومُحسّن للإشعار وبثه للزبائن في الجرس
+            onSnapshot(collection(db, "store_notifications"), (snapshot) => {
+                const notiList = document.getElementById("noti-list");
+                const admNotiManage = document.getElementById("adm-noti-list-manage");
+                const badge = document.getElementById("noti-badge");
+
+                if (!notiList) return;
+                notiList.innerHTML = "";
+                if (admNotiManage) admNotiManage.innerHTML = "";
+
+                let hasNotifications = false;
+                let notiArray = [];
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (!data.targetUser || (activeUserSession && data.targetUser === activeUserSession.phone)) {
+                        notiArray.push({ id: doc.id, ...data });
+                    }
+                });
+
+                if (notiArray.length > 0) {
+                    hasNotifications = true;
+                    badge.classList.remove("hidden");
+                } else {
+                    badge.classList.add("hidden");
+                    notiList.innerHTML = `<p class="text-gray-500 text-center italic py-4">لا توجد إشعارات حالياً.</p>`;
+                }
+
+                notiArray.sort((a,b) => b.timestamp - a.timestamp);
+                notiArray.forEach(noti => {
+                    const div = document.createElement("div");
+                    div.className = noti.targetUser ? "p-3 bg-blue-950/20 rounded-xl border border-blue-500/30 space-y-1" : "p-3 bg-[#0b0f19] rounded-xl border border-gray-800/50 space-y-1";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <p class="font-bold text-blue-400">${noti.targetUser ? '📩 رسالة خاصة لك' : '🔥 ' + noti.title}</p>
+                            <span class="text-[9px] text-gray-500 font-medium">${timeAgo(noti.timestamp)}</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">${noti.text}</p>
+                    `;
+                    notiList.appendChild(div);
+
+                    if (admNotiManage && !noti.targetUser) {
+                        const admDiv = document.createElement("div");
+                        admDiv.className = "flex justify-between items-center p-2 bg-[#0b0f19] rounded-lg border border-gray-800 text-[11px]";
+                        admDiv.innerHTML = `
+                            <span class="text-gray-300 truncate max-w-[200px]">📌 <b>${noti.title}:</b> ${noti.text}</span>
+                            <button onclick="deleteNotificationLive('${noti.id}')" class="text-red-500 hover:text-red-400 font-bold px-1"><i class="fas fa-trash-can"></i></button>
+                        `;
+                        admNotiManage.appendChild(admDiv);
+                    }
+                });
+            });
+        });
+
+        // دوال الفلترة وحساب التكلفة التلقائي للخدمات الديناميكية
+        window.filterServicesLiveByPlatform = (platform) => {
+            activeFilterPlatform = platform;
+            const instaBtn = document.getElementById('filter-btn-instagram');
+            const fbBtn = document.getElementById('filter-btn-facebook');
+            const ttBtn = document.getElementById('filter-btn-tiktok');
+
+            // تصفير التنسيق الافتراضي
+            instaBtn.className = "flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-gray-800 text-[11px] font-bold transition-all text-gray-400";
+            fbBtn.className = "flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-gray-800 text-[11px] font-bold transition-all text-gray-400";
+            ttBtn.className = "flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-gray-800 text-[11px] font-bold transition-all text-gray-400";
+
+            if(platform === 'instagram') {
+                instaBtn.className = "flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-pink-500/50 text-[11px] font-bold transition-all text-pink-400 shadow-lg shadow-pink-500/10";
+            } else if(platform === 'facebook') {
+                fbBtn.className = "flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-blue-500/50 text-[11px] font-bold transition-all text-blue-400 shadow-lg shadow-blue-500/10";
+            } else if(platform === 'tiktok') {
+                ttBtn.className = "flex items-center justify-center gap-1 bg-card py-2.5 rounded-xl border border-purple-500/50 text-[11px] font-bold transition-all text-white shadow-lg shadow-purple-500/10";
+            }
+            renderServicesInStoreSelect();
+        };
+
+        window.renderServicesInStoreSelect = () => {
+            const select = document.getElementById('service-select');
+            if(!select) return;
+            select.innerHTML = '';
+
+            const filtered = allDynamicServices.filter(s => s.platform === activeFilterPlatform);
+
+            if(filtered.length === 0) {
+                const opt = document.createElement('option');
+                opt.innerText = "لا توجد خدمات مضافة لهذه المنصة حالياً";
+                select.appendChild(opt);
+                calculateLiveTotal();
+                return;
+            }
+
+            filtered.forEach(srv => {
+                const opt = document.createElement('option');
+                opt.value = srv.srvDocId;
+                opt.innerText = `[#${srv.id}] ${srv.name} — (1000 بـ ₪${srv.price})`;
+                opt.setAttribute('data-price', srv.price);
+                opt.setAttribute('data-discount', srv.discount || 0);
+                opt.setAttribute('data-name', srv.name);
+                select.appendChild(opt);
+            });
+            calculateLiveTotal();
+        };
+
+        window.calculateLiveTotal = () => {
+            const select = document.getElementById('service-select');
+            const quantityInput = document.getElementById('quantity-input');
+            const totalSpan = document.getElementById('total-calculated-cost');
+            const discountMsg = document.getElementById('store-discount-msg');
+
+            if(!select || select.options.length === 0 || !select.options[select.selectedIndex].getAttribute('data-price')) {
+                totalSpan.innerText = "0.00";
+                discountMsg.classList.add('hidden');
+                return;
+            }
+
+            const selectedOpt = select.options[select.selectedIndex];
+            const pricePerThousand = parseFloat(selectedOpt.getAttribute('data-price'));
+            const discountPercent = parseFloat(selectedOpt.getAttribute('data-discount'));
+            const quantity = parseInt(quantityInput.value) || 0;
+
+            let baseCost = (quantity / 1000) * pricePerThousand;
+            let finalCost = baseCost;
+
+            // شرط التحقق من أن الحساب الحالي مسجل وموثق حقيقياً لتطبيق الخصم
+            const isUserVerified = activeUserSession && activeUserSession.isVerified === true;
+
+            if(discountPercent > 0) {
+                if(isUserVerified) {
+                    finalCost = baseCost - (baseCost * (discountPercent / 100));
+                    discountMsg.innerHTML = `🔥 مبروك! تم تطبيق عروض خصم الموثقين بقيمة <span class="text-green-400 font-black">${discountPercent}%</span> تلقائياً.`;
+                    discountMsg.classList.remove('hidden');
+                } else {
+                    discountMsg.innerHTML = `💡 هذا العرض يشمل خصم ${discountPercent}% <span class="text-blue-400">للحسابات الموثقة 👑</span> فقط.`;
+                    discountMsg.classList.remove('hidden');
+                }
+            } else {
+                discountMsg.classList.add('hidden');
+            }
+
+            totalSpan.innerText = finalCost.toFixed(2);
+        };
+
+        // تنفيذ طلب الشراء الفوري بناء على الخصائص الديناميكية والتحقق من خصم التوثيق الحقيقي
+        window.submitPurchaseOrder = async () => {
+            if (!activeUserSession) { showToast("🔒 سجل دخول أولاً لمباشرة العمليات!", "error"); openAuthModal(); return; }
+            
+            const select = document.getElementById('service-select');
+            const targetLink = document.getElementById('target-link-input').value.trim();
+            const quantity = parseInt(document.getElementById('quantity-input').value) || 0;
+
+            if(select.options.length === 0 || !select.options[select.selectedIndex].getAttribute('data-price')) {
+                return showToast("⚠️ يرجى اختيار خدمة صحيحة أولاً!", "error");
+            }
+            if(!targetLink) return showToast("⚠️ يرجى وضع رابط الحساب أو اليوزر المستهدف!", "error");
+            if(quantity <= 0) return showToast("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!", "error");
+
+            const selectedOpt = select.options[select.selectedIndex];
+            const serviceName = selectedOpt.getAttribute('data-name');
+            const pricePerThousand = parseFloat(selectedOpt.getAttribute('data-price'));
+            const discountPercent = parseFloat(selectedOpt.getAttribute('data-discount'));
+
+            const freshUserSnap = await getDoc(doc(db, "store_users", activeUserSession.phone));
+            let currentLiveBalance = parseFloat(activeUserSession.balance || 0);
+            let isUserVerified = false;
+
+            if (freshUserSnap.exists()) { 
+                currentLiveBalance = parseFloat(freshUserSnap.data().balance || 0); 
+                isUserVerified = freshUserSnap.data().isVerified === true;
+            }
+
+            // إعادة حساب التكلفة الصارمة بالسيرفر لمنع أي تلاعب بالمتصفح
+            let baseCost = (quantity / 1000) * pricePerThousand;
+            let totalCost = baseCost;
+            if (discountPercent > 0 && isUserVerified) {
+                totalCost = baseCost - (baseCost * (discountPercent / 100));
+            }
+
+            if (currentLiveBalance < totalCost) {
+                return showToast("❌ رصيد محفظتك الحالي غير كافٍ لشراء هذه الخدمة!", "error");
+            }
+
+            try {
+                const finalCalculatedBalance = currentLiveBalance - totalCost;
+                await setDoc(doc(db, "store_users", activeUserSession.phone), { balance: finalCalculatedBalance }, { merge: true });
+
+                const randomOrderId = Math.floor(10000 + Math.random() * 90000).toString();
+                const dbOrderId = "ORDER_" + Date.now();
+
+                await setDoc(doc(db, "store_orders", dbOrderId), {
+                    orderId: randomOrderId,
+                    userPhone: activeUserSession.phone,
+                    userName: activeUserSession.displayName || "مستخدم",
+                    serviceName: serviceName,
+                    targetLink: targetLink,
+                    quantity: quantity,
+                    timestamp: Date.now(),
+                    status: "قيد التنفيذ"
+                });
+
+                showToast(`🚀 تم إرسال الطلب #${randomOrderId} بنجاح خصم فوري ₪${totalCost.toFixed(2)}!`, "success");
+                document.getElementById('target-link-input').value = "";
+            } catch(err) { showToast("خطأ معالجة السحابة: " + err.message, "error"); }
+        };
+
+        // لوحة تحكم الأدمن: إضافة وحفظ الخدمة/السعر والخصومات ديناميكياً
+        window.saveServiceLiveFromAdmin = async () => {
+            const id = document.getElementById('adm-srv-id').value.trim();
+            const name = document.getElementById('adm-srv-name').value.trim();
+            const platform = document.getElementById('adm-srv-platform').value;
+            const price = parseFloat(document.getElementById('adm-srv-price').value);
+            const discount = parseInt(document.getElementById('adm-srv-discount').value) || 0;
+
+            if(!id || !name || isNaN(price)) {
+                return showToast("⚠️ الرجاء ملء كافة خانات الخدمة والأسعار بشكل صحيح!", "error");
+            }
+
+            try {
+                const docId = "SRV_" + id;
+                await setDoc(doc(db, "dynamic_services", docId), {
+                    id: id,
+                    name: name,
+                    platform: platform,
+                    price: price,
+                    discount: discount
+                });
+
+                showToast("✅ تم حفظ وتحديث أسعار وعروض الخدمة في المتجر فوراً حياً!", "success");
+                document.getElementById('adm-srv-id').value = '';
+                document.getElementById('adm-srv-name').value = '';
+                document.getElementById('adm-srv-price').value = '';
+                document.getElementById('adm-srv-discount').value = '0';
+            } catch(err) { showToast("فشل الحفظ الحي: " + err.message, "error"); }
+        };
+
+        window.renderServicesInAdminList = () => {
+            const container = document.getElementById('adm-services-list-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(allDynamicServices.length === 0) {
+                container.innerHTML = `<p class="text-[10px] text-gray-500 italic text-center py-1">لا توجد خدمات مضافة بالسيرفر حالياً.</p>`;
+                return;
+            }
+
+            allDynamicServices.forEach(srv => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center bg-[#0b0f19] p-2 rounded-lg border border-gray-800 text-[11px]";
+                div.innerHTML = `
+                    <span class="text-gray-300 truncate max-w-[240px]">👑 <b>[${srv.platform.toUpperCase()}]</b> #${srv.id} - ${srv.name} <b class="text-green-400">(₪${srv.price})</b> <b class="text-pink-500">خصم الموثقين: ${srv.discount}%</b></span>
+                    <button onclick="deleteServiceLiveFromAdmin('${srv.srvDocId}')" class="text-red-500 hover:text-red-400 font-bold px-1"><i class="fas fa-trash-alt"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        };
+
+        window.deleteServiceLiveFromAdmin = async (srvDocId) => {
+            if(confirm("هل تود حذف هذه الخدمة والتحكم في إلغائها من شاشة العميل نهائياً؟")) {
+                try {
+                    await deleteDoc(doc(db, "dynamic_services", srvDocId));
+                    showToast("🗑️ تم حذف الخدمة من المتجر حياً فوراً.", "success");
+                } catch(err) { showToast("فشل الحذف: " + err.message, "error"); }
+            }
+        };
+
+        // تشغيل قنوات الاستماع الخاصة بالإدارة (فقط عند فتح لوحة التحكم لتقليل الحمل وتسريع المعالجة)
+        window.initAdminRealtimeChannels = () => {
+            if (unsubscribeAdminUsers || unsubscribeAdminOrders) return;
+
+            unsubscribeAdminUsers = onSnapshot(collection(db, "store_users"), (snapshot) => {
+                localGlobalUsersList = [];
+                let totalMoney = 0;
+
+                snapshot.forEach(doc => {
+                    const uData = doc.data();
+                    localGlobalUsersList.push(uData);
+                    totalMoney += parseFloat(uData.balance || 0);
+                });
+
+                const statUsersCount = document.getElementById("admin-stat-users");
+                const statMoneySum = document.getElementById("admin-stat-money");
+                if (statUsersCount) statUsersCount.innerText = localGlobalUsersList.length;
+                if (statMoneySum) statMoneySum.innerText = "₪ " + totalMoney.toFixed(2);
+                
+                if (!document.getElementById("page-admin").classList.contains("hidden")) {
+                    filterUsersLive();
+                }
+            });
+
+            unsubscribeAdminOrders = onSnapshot(collection(db, "store_orders"), (snapshot) => {
+                allStoreOrders = [];
+                snapshot.forEach(doc => {
+                    allStoreOrders.push({ id: doc.id, ...doc.data() });
+                });
+                allStoreOrders.sort((a,b) => b.timestamp - a.timestamp);
+
+                renderAdminOrdersManagement();
+            });
+        };
+
+        // دالة عرض وتحديث واجهة الحساب بالتسميات وعلامات التوثيق الزرقاء الحقيقية
+        function renderUserAccount(userData) {
+            activeUserSession = userData;
+            document.getElementById("account-visitor").classList.add("hidden");
+            document.getElementById("account-user").classList.remove("hidden");
+            
+            document.getElementById("info-username-display").innerText = userData.displayName || "مستخدم جديد";
+            document.getElementById("info-phone-display").innerText = userData.phone;
+            document.getElementById("info-id").innerText = userData.userIdNo;
+            document.getElementById("info-address").innerText = userData.address;
+            document.getElementById("info-date").innerText = userData.createdAt || "غير محدد";
+
+            const fixedBalance = parseFloat(userData.balance || 0).toFixed(2);
+            document.getElementById("global-balance").innerText = fixedBalance;
+            document.getElementById("wallet-balance-huge").innerText = fixedBalance;
+
+            const headBadge = document.getElementById("header-verified-badge");
+            const accBadge = document.getElementById("account-verified-badge");
+            
+            if (userData.isVerified === true) { headBadge.classList.remove("hidden"); accBadge.classList.remove("hidden"); } 
+            else { headBadge.classList.add("hidden"); accBadge.classList.add("hidden"); }
+
+            // إعادة تحديث الحساب وحساب الخصم في حال كان بالمتجر
+            if(!document.getElementById("page-store").classList.contains("hidden")) {
+                calculateLiveTotal();
+            }
+
+            const headerImg = document.getElementById("header-avatar");
+            const headerIcon = document.getElementById("header-avatar-icon");
+            const profileImg = document.getElementById("profile-avatar-img");
+            const profileLetter = document.getElementById("profile-avatar-letter");
+
+            if (userData.avatarBase64) {
+                headerImg.src = userData.avatarBase64; headerImg.classList.remove("hidden"); headerIcon.classList.add("hidden");
+                profileImg.src = userData.avatarBase64; profileImg.classList.remove("hidden"); profileLetter.classList.add("hidden");
+            } else {
+                headerImg.classList.add("hidden"); headerIcon.classList.remove("hidden");
+                profileImg.classList.add("hidden"); profileLetter.classList.remove("hidden");
+            }
+
+            if (unsubscribeUserOrders) unsubscribeUserOrders();
+            const qOrders = query(collection(db, "store_orders"), where("userPhone", "==", userData.phone));
+            
+            unsubscribeUserOrders = onSnapshot(qOrders, (snapshot) => {
+                const tbody = document.getElementById("user-orders-tbody");
+                if (!tbody) return; tbody.innerHTML = "";
+
+                let myOrders = [];
+                snapshot.forEach(doc => { myOrders.push(doc.data()); });
+                myOrders.sort((a,b) => b.timestamp - a.timestamp);
+
+                if (myOrders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-4 italic">لم تقم بإجراء أي طلبات حتى الآن.</td></tr>`;
+                    return;
+                }
+
+                myOrders.forEach(order => {
+                    let statusColor = "text-yellow-500";
+                    if(order.status === "تم الاكتمال") statusColor = "text-green-400";
+                    if(order.status === "قيد التقدم") statusColor = "text-blue-400";
+                    if(order.status === "ملغي") statusColor = "text-red-400";
+
+                    const tr = document.createElement("tr");
+                    tr.className = "hover:bg-slate-900/30 transition-colors";
+                    tr.innerHTML = `
+                        <td class="py-2.5 font-mono text-gray-400">#${order.orderId}</td>
+                        <td class="py-2.5 max-w-[120px] truncate">
+                            <span class="block text-white font-medium">${order.serviceName}</span>
+                            <span class="block text-[10px] text-gray-500 truncate font-mono">${order.targetLink}</span>
+                        </td>
+                        <td class="py-2.5 text-center font-bold text-gray-400">${order.quantity}</td>
+                        <td class="py-2.5 text-center text-[10px] text-gray-500">${timeAgo(order.timestamp)}</td>
+                        <td class="py-2.5 text-left font-bold ${statusColor}">${order.status}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        // تسجيل الحساب الجديد والولوج
+        window.processRegister = async () => {
+            const displayName = document.getElementById("reg-name").value.trim();
+            const phone = document.getElementById("reg-phone").value.trim();
+            const address = document.getElementById("reg-address").value.trim();
+            const pass = document.getElementById("reg-pass").value;
+            const passConfirm = document.getElementById("reg-pass-confirm").value;
+
+            if(!displayName || !phone || !address || !pass || !passConfirm) {
+                return showToast("⚠️ الرجاء تعبئة كافة البيانات المطلوبة أولاً!", "error");
+            }
+            if(pass !== passConfirm) { return showToast("❌ كلمات المرور غير متطابقة! أعد الفحص.", "error"); }
+
+            try {
+                const userRef = doc(db, "store_users", phone);
+                const userCheck = await getDoc(userRef);
+
+                if (userCheck.exists()) { return showToast("❌ رقم الهاتف هذا مسجل بالفعل مسبقاً!", "error"); }
+
+                const customId = generateUniqueId();
+                const todayDate = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                const newAccountData = {
+                    displayName: displayName, phone: phone, address: address, password: pass,
+                    oldPassword: pass, userIdNo: customId, createdAt: todayDate,
+                    avatarBase64: "", balance: 0.00, isVerified: false
+                };
+
+                await setDoc(userRef, newAccountData);
+                localStorage.setItem('top_fame_user', JSON.stringify(newAccountData));
+                renderUserAccount(newAccountData);
+                
+                closeAuthModal();
+                showToast("✅ تم إنشاء الحساب بنجاح فائق!", "success");
+                setTimeout(() => { switchTab('home'); }, 500);
+            } catch (err) { showToast("خطأ أثناء الحفظ: " + err.message, "error"); }
+        };
+
+        window.processLogin = async () => {
+            const phone = document.getElementById("login-phone").value.trim();
+            const pass = document.getElementById("login-pass").value;
+
+            if(!phone || !pass) return showToast("⚠️ يرجى إدخل البيانات المطلوبة كاملاً!", "error");
+
+            try {
+                const userRef = doc(db, "store_users", phone);
+                const userDoc = await getDoc(userRef);
+
+                if(!userDoc.exists() || userDoc.data().password !== pass) {
+                    return showToast("❌ رقم الهاتف أو كلمة المرور غير صحيحة!", "error");
+                }
+
+                const userData = userDoc.data();
+                localStorage.setItem('top_fame_user', JSON.stringify(userData));
+                renderUserAccount(userData);
+                
+                closeAuthModal();
+                showToast("👋 أهلاً بك مجدداً! تم تسجيل دخولك بنجاح.", "success");
+                setTimeout(() => { switchTab('home'); }, 500);
+            } catch (err) { showToast("حدث خطأ ما: " + err.message, "error"); }
+        };
+
+        window.updateDisplayNameOnly = async () => {
+            if (!activeUserSession) return;
+            const newName = document.getElementById("sec-new-name").value.trim();
+            if(!newName) return showToast("⚠️ يرجى كتابة اسم مستخدم جديد أولاً!", "error");
+
+            try {
+                const userRef = doc(db, "store_users", activeUserSession.phone);
+                await setDoc(userRef, { displayName: newName }, { merge: true });
+                activeUserSession.displayName = newName;
+                localStorage.setItem('top_fame_user', JSON.stringify(activeUserSession));
+                renderUserAccount(activeUserSession);
+                document.getElementById("sec-new-name").value = "";
+                closeSecurityModal();
+                showToast("👤 تم تحديث اسم المستخدم بنجاح فائق!", "success");
+            } catch(err) { showToast("خطأ: " + err.message, "error"); }
+        };
+
+        window.updatePasswordOnly = async () => {
+            if (!activeUserSession) return;
+            const oldPass = document.getElementById("sec-old-pass").value;
+            const newPass = document.getElementById("sec-new-pass").value;
+
+            if (!oldPass || !newPass) return showToast("⚠️ يرجى ملء حقول كلمة المرور الحالية والجديدة!", "error");
+            if (oldPass !== activeUserSession.password) return showToast("❌ كلمة المرور الحالية غير صحيحة!", "error");
+
+            try {
+                const userRef = doc(db, "store_users", activeUserSession.phone);
+                await setDoc(userRef, { password: newPass, oldPassword: oldPass }, { merge: true });
+                activeUserSession.oldPassword = oldPass; activeUserSession.password = newPass;
+                localStorage.setItem('top_fame_user', JSON.stringify(activeUserSession));
+                document.getElementById("sec-old-pass").value = ""; document.getElementById("sec-new-pass").value = "";
+                closeSecurityModal();
+                showToast("🔒 تم تغيير كلمة المرور بنجاح وأمان!", "success");
+            } catch (err) { showToast("فشل الحفظ: " + err.message, "error"); }
+        };
+
+        window.uploadAvatarImage = (inputElement) => {
+            const file = inputElement.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64String = reader.result; if (!activeUserSession) return;
+                try {
+                    const userRef = doc(db, "store_users", activeUserSession.phone);
+                    await setDoc(userRef, { avatarBase64: base64String }, { merge: true });
+                    activeUserSession.avatarBase64 = base64String;
+                    localStorage.setItem('top_fame_user', JSON.stringify(activeUserSession));
+                    renderUserAccount(activeUserSession);
+                    showToast("📸 تم حفظ وتطابق الصورة بنجاح!", "success");
+                } catch(err) { showToast("خطأ حفظ الصورة: " + err.message, "error"); }
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.handleLogout = () => {
+            if (unsubscribeUserOrders) unsubscribeUserOrders();
+            localStorage.removeItem('top_fame_user'); activeUserSession = null;
+            document.getElementById("account-visitor").classList.remove("hidden");
+            document.getElementById("account-user").classList.add("hidden");
+            document.getElementById("header-avatar").classList.add("hidden");
+            document.getElementById("header-avatar-icon").classList.remove("hidden");
+            document.getElementById("header-verified-badge").classList.add("hidden");
+            document.getElementById("global-balance").innerText = "0.00";
+            document.getElementById("wallet-balance-huge").innerText = "0.00";
+            document.getElementById("user-orders-tbody").innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-4 italic">سجل دخولك لرؤية الطلبات الحية.</td></tr>`;
+            showToast("🔒 تم تسجيل الخروج بنجاح.", "success");
+        };
+
+        window.createNewNotification = async () => {
+            const title = document.getElementById("adm-noti-title").value.trim();
+            const text = document.getElementById("adm-noti-text").value.trim();
+            if (!title || !text) return showToast("⚠️ يرجى ملء عنوان وتفاصيل نص الإشعار للبث!", "error");
+
+            try {
+                const notiCustomId = "NOTI_" + Date.now();
+                await setDoc(doc(db, "store_notifications", notiCustomId), { title: title, text: text, timestamp: Date.now() });
+                document.getElementById("adm-noti-title").value = ""; document.getElementById("adm-noti-text").value = "";
+                showToast("⚡ تم بث وإرسال الإشعار اللحظي لجميع الزبائن بنجاح!", "success");
+            } catch(err) { showToast("فشل بث الإشعار: " + err.message, "error"); }
+        };
+
+        window.sendPrivateNotification = async (userPhone) => {
+            const msgInput = document.getElementById(`adm-privmsg-${userPhone}`);
+            const msgText = msgInput.value.trim();
+            if(!msgText) return showToast("⚠️ يرجى كتابة الرسالة الخاصة أولاً!", "error");
+
+            try {
+                const privId = "PRIV_" + Date.now();
+                await setDoc(doc(db, "store_notifications", privId), {
+                    title: "رسالة خاصة من الإدارة", text: msgText, timestamp: Date.now(), targetUser: userPhone
+                });
+                msgInput.value = "";
+                showToast("📩 تم إرسال الإشعار الخاص إلى حساب العميل بنجاح الحفظ!", "success");
+            } catch(err) { showPhone("فشل الإرسال: " + err.message, "error"); }
+        };
+
+        window.toggleUserVerification = async (userPhone, currentStatus) => {
+            try {
+                await setDoc(doc(db, "store_users", userPhone), { isVerified: !currentStatus }, { merge: true });
+                showToast("💎 تم تحديث وبث شارة التوثيق الحقيقية للمستخدم بنجاح!", "success");
+            } catch(err) { showToast("خطأ: " + err.message, "error"); }
+        };
+
+        window.deleteNotificationLive = async (notiId) => {
+            try { await deleteDoc(doc(db, "store_notifications", notiId)); showToast("🗑️ تم حذف الإشعار المحدد من السيرفر فوراً.", "success"); } 
+            catch (err) { showToast("فشل الحذف: " + err.message, "error"); }
+        };
+
+        function renderAdminOrdersManagement() {
+            const container = document.getElementById("admin-orders-manage-list"); if (!container) return; container.innerHTML = "";
+
+            if (allStoreOrders.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-gray-500 text-center italic py-2">لا توجد طلبات بالسيرفر حالياً.</p>`; return;
+            }
+
+            allStoreOrders.forEach(order => {
+                const div = document.createElement("div");
+                div.className = "bg-[#0b0f19] p-3 rounded-xl border border-gray-800 text-[11px] space-y-2 text-right";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center bg-slate-900/40 p-2 rounded border border-gray-900">
+                        <span class="text-white font-bold">📦 طلب #${order.orderId} - ${order.userName}</span>
+                        <span class="text-purple-400 font-mono">${timeAgo(order.timestamp)}</span>
+                    </div>
+                    <div class="space-y-1 text-gray-400">
+                        <p><span class="text-gray-500">الخدمة المطلوبة:</span> <span class="text-gray-200 font-medium">${order.serviceName}</span></p>
+                        <p><span class="text-gray-500">الرابط المستهدف:</span> <span class="text-blue-400 font-mono select-text break-all">${order.targetLink}</span></p>
+                        <p><span class="text-gray-500">الكمية المقدرة:</span> <span class="text-yellow-500 font-bold">${order.quantity}</span></p>
+                    </div>
+                    <div class="flex justify-between items-center pt-1 border-t border-gray-900/60">
+                        <span class="text-gray-500">تعديل حالة الطلب:</span>
+                        <select onchange="updateOrderStatusByAdmin('${order.id}', this.value)" class="bg-[#121824] border border-gray-800 text-xs text-white p-1 rounded focus:outline-none">
+                            <option value="قيد التنفيذ" ${order.status === 'قيد التنفيذ' ? 'selected' : ''}>قيد التنفيذ</option>
+                            <option value="قيد التقدم" ${order.status === 'قيد التقدم' ? 'selected' : ''}>قيد التقدم</option>
+                            <option value="تم الاكتمال" ${order.status === 'تم الاكتمال' ? 'selected' : ''}>تم الاكتمال</option>
+                            <option value="ملغي" ${order.status === 'ملغي' ? 'selected' : ''}>ملغي</option>
+                        </select>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        window.updateOrderStatusByAdmin = async (docOrderId, newStatus) => {
+            try { await setDoc(doc(db, "store_orders", docOrderId), { status: newStatus }, { merge: true }); showToast(`✅ تم تحديث حالة الطلب إلى (${newStatus}) وإشعار العميل حياً!`, "success"); } 
+            catch(err) { showToast("خطأ تحديث الحالة: " + err.message, "error"); }
+        };
+
+        window.filterUsersLive = () => {
+            const searchVal = document.getElementById("adm-search-input").value.trim().toLowerCase();
+            const resultsContainer = document.getElementById("adm-search-results");
+
+            if (!resultsContainer) return; resultsContainer.innerHTML = "";
+            if (!searchVal) { resultsContainer.innerHTML = `<p class="text-[11px] text-gray-500 text-center italic py-4">اكتب حرفاً أو رقماً لبدء الفلترة الفورية...</p>`; return; }
+
+            const filtered = localGlobalUsersList.filter(u => 
+                (u.displayName && u.displayName.toLowerCase().includes(searchVal)) || (u.phone && u.phone.includes(searchVal))
+            );
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `<p class="text-[11px] text-red-400 text-center italic py-4">❌ لم يتم العثور على أي حساب يطابق هذا البحث.</p>`; return;
+            }
+
+            filtered.forEach(user => {
+                const card = document.createElement("div");
+                card.className = "bg-[#0b0f19] p-3 rounded-xl border border-gray-800 space-y-2.5 text-xs text-right";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg border border-gray-800/40">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-white font-bold">👤 ${user.displayName || 'بدون اسم'}</span>
+                            ${user.isVerified === true ? '<svg class="verified-badge-svg" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.99-3.818-3.99-.48 0-.94.1-1.348.27C14.825 2.515 13.512 1.5 12 1.5s-2.825 1.015-3.422 2.28c-.407-.17-.867-.27-1.348-.27-2.108 0-3.818 1.78-3.818 3.99 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.71 3.99 3.818 3.99.48 0 .94-.1 1.348-.27.597 1.265 1.91 2.28 3.422 2.28s2.825-1.015 3.422-2.28c.407.17.867.27 1.348.27 2.108 0 3.818-1.78 3.818-3.99 0-.495-.084-.965-.238-1.4 1.273-.65 2.148-2.02 2.148-3.6zm-12.72 4.23l-3.32-3.32 1.42-1.42 1.9 1.9 4.83-4.83 1.42 1.42-6.25 6.25z"/></svg>' : ''}
+                        </div>
+                        <span class="text-green-400 font-mono font-bold">₪ ${(user.balance || 0).toFixed(2)}</span>
+                    </div>
+
+                    <div class="p-2 bg-slate-950/40 rounded border border-gray-900 text-[11px] space-y-1 text-gray-400">
+                        <p><span class="text-gray-500">📞 الهاتف:</span> <span class="text-blue-400 font-mono">${user.phone}</span></p>
+                        <p><span class="text-gray-500">🆔 الـ ID فريد:</span> <span class="text-gray-300 font-mono">${user.userIdNo || 'لا يوجد'}</span></p>
+                        <p><span class="text-gray-500">📍 الإقامة:</span> <span class="text-gray-300">${user.address || 'غير محدد'}</span></p>
+                        <p class="pt-0.5 border-t border-gray-900"><span class="text-yellow-600">🔑 كلمة السر:</span> <span class="text-yellow-500 font-mono font-bold">${user.password}</span></p>
+                    </div>
+
+                    <div class="space-y-2 pt-1 border-t border-gray-900">
+                        <div class="flex gap-1.5">
+                            <input type="text" id="adm-privmsg-${user.phone}" placeholder="اكتب رسالة خاصة لهذا العميل..." class="w-full p-1.5 rounded bg-slate-900 border border-gray-800 text-[11px] text-white focus:outline-none">
+                            <button onclick="sendPrivateNotification('${user.phone}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 rounded text-[10px] font-bold shrink-0">إرسال خاص</button>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <input type="text" id="adm-newpass-${user.phone}" placeholder="كلمة سر جديدة للزبون" class="w-full p-1.5 rounded bg-slate-900 border border-gray-800 text-[11px] text-white focus:outline-none">
+                            <button onclick="changeUserPasswordByAdmin('${user.phone}', '${user.password}')" class="bg-purple-600 hover:bg-purple-700 text-white px-2.5 rounded text-[11px] font-bold shrink-0">تغيير الباسورد</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+                            <button onclick="openAdminMoneyModal('${user.phone}', 'add')" class="bg-green-950/40 border border-green-900 text-green-400 hover:bg-green-950/80 p-1.5 rounded text-[10px] font-bold text-center transition-all">➕ شحن رصيد</button>
+                            <button onclick="openAdminMoneyModal('${user.phone}', 'sub')" class="bg-red-950/40 border border-red-900 text-red-400 hover:bg-red-950/80 p-1.5 rounded text-[10px] font-bold text-center transition-all">➖ سحب رصيد</button>
+                            <button onclick="toggleUserVerification('${user.phone}', ${user.isVerified || false})" class="bg-blue-950/40 border border-blue-900 text-blue-400 hover:bg-blue-950/80 p-1.5 rounded text-[10px] font-bold text-center transition-all truncate">👑 ${user.isVerified === true ? 'إلغاء التوثيق' : 'إعطاء توثيق'}</button>
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        };
+
+        window.changeUserPasswordByAdmin = async (userPhone, currentPass) => {
+            const inputField = document.getElementById(`adm-newpass-${userPhone}`);
+            const newPassVal = inputField.value.trim();
+            if (!newPassVal) return showToast("⚠️ يرجى كتابة كلمة مرور جديدة أولاً لحفظها للزبون!", "error");
+
+            try {
+                await setDoc(doc(db, "store_users", userPhone), { password: newPassVal, oldPassword: currentPass }, { merge: true });
+                inputField.value = ""; showToast("🔒 تم تحديث كلمة مرور المستخدم بنجاح فائق!", "success");
+            } catch(err) { showToast("فشل تحديث كلمة السر: " + err.message, "error"); }
+        };
+
+        window.openAdminMoneyModal = (phone, action) => {
+            document.getElementById("money-modal-phone").value = phone; document.getElementById("money-modal-action").value = action;
+            document.getElementById("money-modal-amount").value = "";
+            document.getElementById("money-modal-title").innerText = action === 'add' ? "➕ شحن رصيد إضافي للمحفظة" : "➖ سحب قيمة مالية من المحفظة";
+            document.getElementById("admin-money-modal").classList.remove("hidden");
+        };
+
+        window.closeAdminMoneyModal = () => { document.getElementById("admin-money-modal").classList.add("hidden"); };
+
+        window.submitUserBalanceModification = async () => {
+            const phone = document.getElementById("money-modal-phone").value;
+            const action = document.getElementById("money-modal-action").value;
+            const amountVal = parseFloat(document.getElementById("money-modal-amount").value);
+
+            if (isNaN(amountVal) || amountVal <= 0) return showToast("❌ يرجى إدخال قيمة مالية رقمية صحيحة!", "error");
+
+            try {
+                const userRef = doc(db, "store_users", phone); const docSnap = await getDoc(userRef);
+
+                if (docSnap.exists()) {
+                    const currentBal = parseFloat(docSnap.data().balance || 0); let finalBal = currentBal;
+
+                    if (action === 'add') { finalBal = currentBal + amountVal; } 
+                    else {
+                        if (currentBal < amountVal) return showToast("❌ لا يمكن السحب! رصيد العميل الحالي أقل من القيمة المطلوبة.", "error");
+                        finalBal = currentBal - amountVal;
+                    }
+
+                    await setDoc(userRef, { balance: finalBal }, { merge: true }); closeAdminMoneyModal();
+                    showToast(`💰 تم تعديل محفظة الحساب بنجاح! الرصيد الجديد: ₪${finalBal.toFixed(2)}`, "success");
+                }
+            } catch(err) { showToast("خطأ في العمليات المالية: " + err.message, "error"); }
+        };
+    </script>
+
+    <!-- الواجهات البرمجية العامة للتنقل بين التبويبات والمنصات -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
+            document.getElementById('page-' + tabId).classList.remove('hidden');
+            document.getElementById('nav-' + tabId).classList.add('nav-active');
+            
+            // تحديث التكلفة بشكل فوري عند الدخول لتبويب المتجر
+            if(tabId === 'store' && window.calculateLiveTotal) {
+                window.calculateLiveTotal();
+            }
+        }
+
+        function switchTabWithPlatform(tabId, platform) {
+            switchTab(tabId);
+            if(window.filterServicesLiveByPlatform) {
+                window.filterServicesLiveByPlatform(platform);
+            }
+        }
+
+        function openAuthModal() { document.getElementById("auth-modal").classList.remove("hidden"); }
+        function closeAuthModal() { document.getElementById("auth-modal").classList.add("hidden"); }
+        function openSecurityModal() { document.getElementById("security-modal").classList.remove("hidden"); }
+        function closeSecurityModal() { document.getElementById("security-modal").classList.add("hidden"); }
+
+        function openAdminAuthModal() { 
+            document.getElementById("admin-pass-input").value = "";
+            document.getElementById("admin-auth-modal").classList.remove("hidden"); 
+        }
+        function closeAdminAuthModal() { document.getElementById("admin-auth-modal").classList.add("hidden"); }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById("admin-pass-input").value;
+            if (pass === "901011197" || pass === "معتز") {
+                closeAdminAuthModal();
+                showToast("🔑 مرحباً بك يا معتز! تم فتح لوحة التحكم بنجاح.", "success");
+                if (window.initAdminRealtimeChannels) { window.initAdminRealtimeChannels(); }
+                switchTab('admin');
+            } else { showToast("❌ كلمة مرور الإدارة خاطئة! تم رفض العبور الآمن.", "error"); }
+        }
+
+        function toggleNotifications() { document.getElementById("noti-modal").classList.toggle("hidden"); }
+
+        function toggleAuthType(type) {
+            if(type === 'login') {
+                document.getElementById("form-login").classList.remove("hidden"); document.getElementById("form-register").classList.add("hidden");
+                document.getElementById("tab-login-btn").className = "text-blue-500 font-bold border-b-2 border-blue-500 pb-1";
+                document.getElementById("tab-register-btn").className = "text-gray-400 pb-1";
+            } else {
+                document.getElementById("form-login").classList.add("hidden"); document.getElementById("form-register").classList.remove("hidden");
+                document.getElementById("tab-register-btn").className = "text-blue-500 font-bold border-b-2 border-blue-500 pb-1";
+                document.getElementById("tab-login-btn").className = "text-gray-400 pb-1";
+            }
+        }
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("custom-toast"); toast.innerText = message;
+            if(type === "success") {
+                toast.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-11/12 max-w-sm p-4 rounded-xl shadow-2xl text-center text-xs font-bold transition-all duration-300 transform scale-100 opacity-100 bg-green-500 text-white";
+            } else {
+                toast.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-11/12 max-w-sm p-4 rounded-xl shadow-2xl text-center text-xs font-bold transition-all duration-300 transform scale-100 opacity-100 bg-red-500 text-white";
+            }
+            setTimeout(() => { toast.classList.remove("scale-100", "opacity-100"); toast.classList.add("scale-0", "opacity-0"); }, 3000);
+        }
+
+        function copyUserID() {
+            const idText = document.getElementById("info-id").innerTex=t; navigator.clipboard.writeText(idText);
+            showToast("📋 تم نسخ معرف حسابك الشخصي (ID): " + idText, "success");
+        }
+    </script>
+    <script>
+/* توثيق الكود: 
+   هذا السكربت يقوم بإضافة قسم "تطوير معتز الغوراني" مع روابط تواصل 
+   وزر لطلب توثيق الحساب، مع الحفاظ على جميع علامات التوثيق الأصلية في الموقع.
+*/
+
+(function() {
+    // 1. توثيق: دالة النافذة المنبثقة العصرية لعرض الرسائل
+    window.showFancyModal = function(msg) {
+        const modal = document.createElement('div');
+        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:999999;";
+        modal.innerHTML = `
+            <div style="background:#1a1c24; padding:20px; border-radius:15px; border:1px solid #4f46e5; text-align:center; width:85%; max-width:280px; color:white;">
+                <p style="font-size:14px; margin-bottom:15px; line-height:1.5;">${msg}</p>
+                <button onclick="this.parentElement.parentElement.remove()" style="width:100%; padding:8px; background:#4f46e5; border:none; border-radius:8px; color:white; font-size:12px; font-weight:bold;">حسناً</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    };
+
+    // 2. توثيق: العثور على زر "خروج" لإدراج القسم الجديد تحته
+    const logoutBtn = Array.from(document.querySelectorAll('button, a')).find(b => b.innerText.includes('خروج') || b.innerText.includes('Logout'));
+    
+    if (logoutBtn && !document.getElementById('compact-footer-mg')) {
+        const footer = document.createElement('div');
+        footer.id = 'compact-footer-mg';
+        footer.style.cssText = "text-align: center; margin-top: 5px; padding: 5px;";
+        
+        // 3. توثيق: بناء هيكل الروابط وزر التوثيق
+        footer.innerHTML = `
+            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 8px;">
+                <a href="https://wa.me/972599074653" style="color:#25D366; font-size:20px;"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://instagram.com/41z00" style="color:#E1306C; font-size:20px;"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div style="margin-bottom: 5px;">
+                <button id="main-verify-btn" style="padding: 5px 20px; background: #4f46e5; color: white; border-radius: 8px; border: none; font-size: 11px; font-weight: bold; cursor: pointer;">
+                    طلب توثيق الحساب
+                </button>
+            </div>
+            <div style="font-size: 13px; color: #aaa;">
+                <span style="color: #fff;">تطوير:</span> 
+                <span style="color: #fff; font-size: 14px;">معتز الغوراني</span>
+            </div>
+        `;
+        logoutBtn.parentNode.insertBefore(footer, logoutBtn.nextSibling);
+
+        // 4. توثيق: منطق التحقق من عدد الطلبات ورفع صورة الهوية
+        document.getElementById('main-verify-btn').onclick = async function() {
+            const myOrders = (typeof allStoreOrders !== 'undefined' ? allStoreOrders : []).filter(o => o.userPhone === activeUserSession.phone);
+            if (myOrders.length < 3) {
+                showFancyModal("يجب إتمام 3 عمليات شراء على الأقل للتوثيق. بعد توثيق حسابك، سوف تحصل على خصومات خاصة للحسابات الموثقة!");
+                return;
+            }
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    await setDoc(doc(db, "store_users", activeUserSession.phone), {
+                        idPhoto: reader.result,
+                        status: "قيد المراجعة"
+                    }, { merge: true });
+                    showFancyModal("تم إرسال الهوية! سيتم المراجعة قريباً.");
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        };
+    }
+})();
+</script>
+
+<style>
+/* تحسين شكل بطاقات طرق الدفع */
+.payment-card {
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #0b0f19, #151a28);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.payment-card:hover {
+    transform: translateY(-5px);
+    border-color: #3b82f6 !important;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+}
+
+/* تحسين زر النسخ الرئيسي */
+.copy-button-container {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.copy-button-container:active {
+    transform: scale(0.98);
+    background: #1a2233;
+}
+
+/* تجميل النص والأرقام */
+.digit-font {
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+</style>
+
+<script>
+// تطبيق الكلاسات الجديدة برمجياً لتجنب تعديل الكود القديم يدوياً
+document.querySelectorAll('.grid > div').forEach(card => {
+    card.classList.add('payment-card');
+});
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<style>
+    /* تنسيق النقاط لتكون واضحة جداً */
+    .custom-pagination { 
+        display: flex; 
+        justify-content: center; 
+        gap: 10px; 
+        margin-top: 15px; 
+        padding-bottom: 10px;
+    }
+    .swiper-pagination-bullet { 
+        width: 12px !important; 
+        height: 12px !important; 
+        background: #ffffff !important; /* لون أبيض صريح */
+        opacity: 0.3 !important; 
+        transition: all 0.3s;
+    }
+    .swiper-pagination-bullet-active { 
+        background: #ffffff !important; /* أبيض */
+        opacity: 1 !important; 
+        width: 30px !important; /* نقطة عريضة لتكون واضحة */
+        border-radius: 6px !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const adsImages = [
+            "https://urhere515.com/wp-content/uploads/2025/05/%D9%85%D8%AA%D8%A7%D8%A8%D8%B9%D9%8A%D9%86-%D8%A7%D9%86%D8%B3%D8%AA%D8%A7-600x600.png",
+            "https://cdn.salla.sa/NKjBKV/xiXq4zfuMRQAvoOKgF3uqD8QEmeklE0o2JLkv7xW.jpg",
+            "https://urhere515.com/wp-content/uploads/2025/05/%D9%85%D8%AA%D8%A7%D8%A8%D8%B9%D9%8A%D9%86-%D8%AA%D9%8A%D9%83-%D8%AA%D9%88%D9%83-600x600.png"
+        ];
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'w-full px-4 mt-6';
+        wrapper.innerHTML = `
+            <div class="swiper myAdsSlider w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <div class="swiper-wrapper" id="ads-container"></div>
+            </div>
+            <div class="custom-pagination"></div>
+        `;
+
+        // البحث عن مكان مناسب تحت الأيقونات
+        const target = document.querySelector('#page-home .grid');
+        if (target) {
+            target.after(wrapper);
+            
+            const container = document.getElementById('ads-container');
+            adsImages.forEach(url => {
+                container.innerHTML += `<div class="swiper-slide"><img src="${url}" class="w-full h-40 object-cover"></div>`;
+            });
+
+            new Swiper(".myAdsSlider", {
+                loop: true,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                pagination: { el: ".custom-pagination", clickable: true },
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
